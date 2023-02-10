@@ -74,7 +74,7 @@ let Todo=()=>{
         <Col>
           <Card>
             <Card.Body>
-              <Card.Title style= { {backgroundColor:"yellow"}}>Todo</Card.Title>
+              <Card.Title style= { {backgroundColor:"yellow"}}>TODO(Open)</Card.Title>
               {data?.map((ele) => (
               !ele.completed && <div><Card.Text >
                 <Button variant="light" onClick={handleTodo}value={ele.id}>{ele.title}</Button>
@@ -87,7 +87,7 @@ let Todo=()=>{
         <Col>
           <Card>
             <Card.Body>
-              <Card.Title style= { {backgroundColor:"yellow"}}>Inprogress</Card.Title>
+              <Card.Title style= { {backgroundColor:"yellow"}}>In Progress</Card.Title>
               {inprogressData?.map((ele,i) => (
               <div><Card.Text >
                 <Button variant="light" onClick={handleInProgress} value={ele.id}>{ele.title}</Button>
