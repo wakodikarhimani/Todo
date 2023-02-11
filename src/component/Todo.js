@@ -6,16 +6,14 @@ import Card from "react-bootstrap/Card";
 import Col from "react-bootstrap/Col";
 import Row from "react-bootstrap/Row";
 import Button from "react-bootstrap/Button";
+import $ from 'jquery';
 
 let Todo = () => {
   let dispatch = useDispatch();
   let [isEdit, setIsEdit] = useState(false);
   let [todoAction, saveTodoAction] = useState("");
   const [index, setIndex] = useState(1);
-  const dragItemToProgress = useRef();
-  const dragOverItemToProgress = useRef();
-  const dragItemToComplete = useRef();
-  const dragOverItemToComplete = useRef();
+  const [id,setId]=useState("");
   useEffect(() => {
     axios
       .get("https://jsonplaceholder.typicode.com/todos?size=20")
@@ -44,7 +42,7 @@ let Todo = () => {
     return state?.completed;
   });
 
-  let handleInProgress = (e) => {
+  let handleClick = (e) => {
     setIsEdit(true);
     saveTodoAction(e.target.value);
   };
@@ -64,16 +62,25 @@ let Todo = () => {
 
   const droptoComplete = (e) => {
     let completeddata = inprogressData.find((ele) => ele.id == e.target.value);
-    dispatch({ type: "MOVECOMPLETE", payload: completeddata });
-    dragItemToComplete.current = null;
-    dragOverItemToComplete.current = null;
+    console.log("compl",$(document))
+    $(document).on('dragover', '#todo', function(e){
+      e.preventDefault()
+      console.log("drag")
+      setId("todo");
+    })
+    console.log("id",id)
+    $(document).on('dragover', '#complete', function(e){
+      setId("complete");
+    })
+    id == "todo" && dispatch({ type: "MOVE_BACK_TODO", payload: completeddata });
+    id == "complete" && dispatch({ type: "MOVECOMPLETE", payload: completeddata });
   };
 
   return (
     <div>
       <Row xs={1} md={3} className="g-4">
         <Col>
-          <Card>
+          <Card id="todo">
             <Card.Body>
               <Card.Title style={{ backgroundColor: "yellow" }}>
                 TODO (Open)
@@ -91,10 +98,9 @@ let Todo = () => {
                         ) : (
                           <Button
                             variant="light"
-                            onClick={handleInProgress}
+                            onClick={handleClick}
                             value={ele.id}
                             draggable
-                            onDrop={dropToInProgress}
                             onDragEnd={dropToInProgress}
                           >
                             {ele.title}
@@ -125,9 +131,8 @@ let Todo = () => {
                     ) : (
                       <Button
                         variant="light"
-                        onClick={handleInProgress}
+                        onClick={handleClick}
                         draggable
-                        // onDragStart={(e) => dragStartToComplete(e, index)}
                         // onDragEnter={(e) => dragEnterToComplete(e, index)}
                         onDragEnd={droptoComplete}
                         value={ele.id}
@@ -142,7 +147,7 @@ let Todo = () => {
           </Card>
         </Col>
         <Col>
-          <Card>
+          <Card id="complete">
             <Card.Body>
               <Card.Title style={{ backgroundColor: "yellow" }}>
                 Completed
